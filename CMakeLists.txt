@@ -31,7 +31,13 @@ juce_add_plugin(UtilityGain
     PRODUCT_NAME "UtilityGain"
 )
 
-# (We’ll add sources later via target_sources)
+target_sources(UtilityGain PRIVATE
+    Source/PluginProcessor.cpp
+    Source/PluginEditor.cpp
+    Source/PluginProcessor.h
+    Source/PluginEditor.h
+)
+
 juce_generate_juce_header(UtilityGain)
 
 # Trim unused JUCE features to reduce build size
