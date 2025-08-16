@@ -4,7 +4,7 @@
 #include "PluginProcessor.h"
 
 //============================================================
-class UtilityGainAudioProcessorEditor : juce::AudioProcessorEditor
+class UtilityGainAudioProcessorEditor : public juce::AudioProcessorEditor
 {
 public:
     explicit UtilityGainAudioProcessorEditor (UtilityGainAudioProcessor&);
