@@ -23,7 +23,7 @@ juce_add_plugin(UtilityGain
     BUNDLE_ID com.nicoguzman.UtilityGain
     PLUGIN_MANUFACTURER_CODE Mata   # 4 chars
     PLUGIN_CODE Ugai                # 4 chars, make unique
-    FORMATS AU VST3                 # build Audio Unit + VST3 on macOS
+    FORMATS AU VST3 Standalone      # build Audio Unit + VST3 on macOS
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
@@ -31,7 +31,13 @@ juce_add_plugin(UtilityGain
     PRODUCT_NAME "UtilityGain"
 )
 
-# (We’ll add sources later via target_sources)
+target_sources(UtilityGain PRIVATE
+    Source/PluginProcessor.cpp
+    Source/PluginEditor.cpp
+    Source/PluginProcessor.h
+    Source/PluginEditor.h
+)
+
 juce_generate_juce_header(UtilityGain)
 
 # Trim unused JUCE features to reduce build size
