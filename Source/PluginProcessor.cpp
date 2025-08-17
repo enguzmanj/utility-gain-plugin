@@ -38,12 +38,42 @@ void UtilityGainAudioProcessor::setStateInformation(const void *data, int sizeIn
         apvts.replaceState(juce::ValueTree::fromXml(*xml));
 }
 
-void UtilityGainAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock){};
+void UtilityGainAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+{
+    gainSmoothed.reset(sampleRate, 0.02);
+    gainSmoothed.setCurrentAndTargetValue(1.0f);
+};
+
 void UtilityGainAudioProcessor::releaseResources() {};
+
 void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    // For now: just clear the buffer (silence)
-    buffer.clear();
+    juce::ScopedNoDenormals noDenormals;
+    
+    // 1) Read parameter atomically (dB)
+    auto* gainParam = apvts.getRawParameterValue("gain");
+    const float gainDB = gainParam->load();
+    
+    // 2) Convert to linear
+    const float targetLinear = juce::Decibels::decibelsToGain(gainDB);
+    
+    // 3) Update smoother target
+    gainSmoothed.setTargetValue(targetLinear);
+    
+    // 4) Apply per-sample ramp
+    const int numChannels = buffer.getNumChannels();
+    const int numSamples = buffer.getNumSamples();
+    
+    for (int ch = 0; ch < numChannels; ++ch)
+    {
+        float* data = buffer.getWritePointer(ch);
+        for (int n = 0; n < numSamples; ++n)
+        {
+            data[n] *= gainSmoothed.getNextValue();
+        }
+    }
+    
+    
 }
 
 juce::AudioProcessorEditor* UtilityGainAudioProcessor::createEditor()

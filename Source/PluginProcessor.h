@@ -44,5 +44,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
 private:
+    // Smoothed linear gain used in processBlock
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gainSmoothed;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessor)
 };
