@@ -1,7 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-namespace ids { static constexpr auto gain = "gain";}
 
 UtilityGainAudioProcessor::UtilityGainAudioProcessor() {}
 UtilityGainAudioProcessor::~UtilityGainAudioProcessor() {}

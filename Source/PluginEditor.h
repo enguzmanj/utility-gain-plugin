@@ -19,5 +19,11 @@ private:
     
     UtilityGainAudioProcessor& audioProcessor;
     
+    juce::Slider gainSlider;
+    juce::Label gainLabel;
+    
+    using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+    std::unique_ptr<Attachment>(gainAttach);
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessorEditor);
 };

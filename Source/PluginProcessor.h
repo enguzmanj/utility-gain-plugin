@@ -4,6 +4,11 @@
 
 //===========================================================
 
+namespace ids
+{
+    inline constexpr auto gain = "gain";
+}
+
 class UtilityGainAudioProcessor : public juce::AudioProcessor
 {
 public:
