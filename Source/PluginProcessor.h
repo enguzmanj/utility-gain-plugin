@@ -4,9 +4,16 @@
 
 //===========================================================
 
+namespace ids
+{
+    inline constexpr auto gain = "gain";
+}
+
 class UtilityGainAudioProcessor : public juce::AudioProcessor
 {
 public:
+    using APVTS = juce::AudioProcessorValueTreeState;
+    
     UtilityGainAudioProcessor();
     ~UtilityGainAudioProcessor() override;
     
@@ -34,9 +41,16 @@ public:
     const juce::String getProgramName (int index) override {return {};}
     void changeProgramName (int index, const juce::String& newName) override {}
     
-    void getStateInformation (juce::MemoryBlock& destData) override {}
-    void setStateInformation (const void* data, int sizeInBytes) override {}
+    // ---- Parameter State ---- //
+    static APVTS::ParameterLayout createParameterLayout();
+    APVTS apvts { *this, nullptr, "PARAMS", createParameterLayout() };
+    
+    void getStateInformation (juce::MemoryBlock& destData) override;
+    void setStateInformation (const void* data, int sizeInBytes) override;
     
 private:
+    // Smoothed linear gain used in processBlock
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gainSmoothed;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessor)
 };
