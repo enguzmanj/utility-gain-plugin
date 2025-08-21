@@ -49,6 +49,12 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
+    // Meter outputs
+    std::atomic<float> inPeak {0.0f};
+    std::atomic<float> outPeak {0.0f};
+    std::atomic<float> inRMS {0.0f};
+    std::atomic<float> outRMS {0.0f};
+    
 private:
     // Smoothed linear gain used in processBlock
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gainSmoothed;
