@@ -28,5 +28,6 @@ private:
     
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>(bypassAttach);
     
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessorEditor);
 };

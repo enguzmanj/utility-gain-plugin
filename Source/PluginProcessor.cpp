@@ -109,6 +109,11 @@ void UtilityGainAudioProcessor::setStateInformation(const void *data, int sizeIn
         apvts.replaceState(juce::ValueTree::fromXml(*xml));
 }
 
+juce::AudioProcessorParameter* UtilityGainAudioProcessor::getBypassParameter() const
+{
+    return apvts.getParameter( ids::bypass );
+}
+
 
 //===========================================
 // Factory

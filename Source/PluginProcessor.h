@@ -56,5 +56,7 @@ private:
     // Smoothed bypass
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> bypassXfade; // 0=process, 1=bypass
     
+    juce::AudioProcessorParameter* getBypassParameter() const override;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessor)
 };
