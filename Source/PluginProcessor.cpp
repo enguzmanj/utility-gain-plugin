@@ -21,6 +21,9 @@ UtilityGainAudioProcessor::createParameterLayout()
                                                             0.0f, //default 0 dB
                                                             AudioParameterFloatAttributes().withStringFromValueFunction(
                                                                                                                        [] (float v, int) { return juce::String(v, 1) + "dB";} )));
+    
+    params.push_back(std::make_unique<AudioParameterBool>(ParameterID{ ids::bypass, 1 }, "Bypass", false));
+    
     return { params.begin(), params.end()};
 }
 

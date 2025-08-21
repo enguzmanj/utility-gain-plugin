@@ -7,6 +7,7 @@
 namespace ids
 {
     inline constexpr auto gain = "gain";
+    inline constexpr auto bypass = "bypass";
 }
 
 class UtilityGainAudioProcessor : public juce::AudioProcessor
