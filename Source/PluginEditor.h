@@ -21,9 +21,12 @@ private:
     
     juce::Slider gainSlider;
     juce::Label gainLabel;
+    juce::ToggleButton bypassButton;
     
-    using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
-    std::unique_ptr<Attachment>(gainAttach);
+    using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+    std::unique_ptr<SliderAttachment>(gainAttach);
+    
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>(bypassAttach);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessorEditor);
 };

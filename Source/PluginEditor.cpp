@@ -19,7 +19,12 @@ UtilityGainAudioProcessorEditor::UtilityGainAudioProcessorEditor(UtilityGainAudi
     addAndMakeVisible(gainLabel);
     
     // Attach to parameter
-    gainAttach = std::make_unique<Attachment>(audioProcessor.apvts, ids::gain, gainSlider);
+    gainAttach = std::make_unique<SliderAttachment>(audioProcessor.apvts, ids::gain, gainSlider);
+    
+    // Bypass button
+    bypassButton.setButtonText("Bypass");
+    addAndMakeVisible(bypassButton);
+    bypassAttach = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, ids::bypass, bypassButton);
 }
 
 UtilityGainAudioProcessorEditor::~UtilityGainAudioProcessorEditor () {}
@@ -33,7 +38,11 @@ void UtilityGainAudioProcessorEditor::paint (juce::Graphics& g)
 void UtilityGainAudioProcessorEditor::resized()
 {
     square.setBounds(50, 5, 300, 50);
-    auto r = getLocalBounds().reduced(55);
+    
+    auto r = getLocalBounds().reduced (20);
+    bypassButton.setBounds (r.removeFromBottom(r.getHeight() * 0.10).removeFromLeft (r.getWidth() * 0.5));
+    
+    r = getLocalBounds().reduced(55);
     gainLabel.setBounds(r.removeFromTop(24));
     gainSlider.setBounds(r.withSizeKeepingCentre(r.getHeight() * 0.75, 200));
 }
