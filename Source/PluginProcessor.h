@@ -7,6 +7,7 @@
 namespace ids
 {
     inline constexpr auto gain = "gain";
+    inline constexpr auto bypass = "bypass";
 }
 
 class UtilityGainAudioProcessor : public juce::AudioProcessor
@@ -51,6 +52,11 @@ public:
 private:
     // Smoothed linear gain used in processBlock
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gainSmoothed;
+    
+    // Smoothed bypass
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> bypassXfade; // 0=process, 1=bypass
+    
+    juce::AudioProcessorParameter* getBypassParameter() const override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessor)
 };
