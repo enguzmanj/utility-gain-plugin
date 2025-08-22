@@ -38,6 +38,7 @@ target_sources(UtilityGain PRIVATE
     Source/PluginEditor.h
     Source/Square.h
     Source/Square.cpp
+    Source/MeterComponent.h
 )
 
 juce_generate_juce_header(UtilityGain)

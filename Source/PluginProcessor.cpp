@@ -122,8 +122,8 @@ void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     }
     
     const float outRMSBlock = std::sqrt(outRMSAcc/std::max(1, numSamples * numChannels));
-    inPeak.store(outPeakBlock);
-    inRMS.store(outRMSBlock);
+    outPeak.store(outPeakBlock);
+    outRMS.store(outRMSBlock);
     
     
 }
