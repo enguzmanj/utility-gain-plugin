@@ -128,6 +128,33 @@ void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     
 }
 
+float UtilityGainAudioProcessor::getGainDB() const
+{
+    return apvts.getRawParameterValue( ids::gain )->load();
+}
+float UtilityGainAudioProcessor::getGainNorm() const
+{
+    auto* p = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(ids::gain));
+    jassert(p != nullptr);
+    const float db = getGainDB();
+    return p->getNormalisableRange().convertTo0to1(db);
+}
+
+void UtilityGainAudioProcessor::setGainDB(float db)
+{
+    auto* p = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(ids::gain));
+    jassert(p != nullptr);
+    const auto& range = p->getNormalisableRange();
+    const float norm = range.convertTo0to1(db);
+    p->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, norm));
+}
+void UtilityGainAudioProcessor::setGainNorm(float norm)
+{
+    auto* p = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(ids::gain));
+    jassert(p != nullptr);
+    p->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, norm));
+}
+
 void UtilityGainAudioProcessor::releaseResources() {};
 
 
