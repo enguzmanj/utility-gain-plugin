@@ -10,6 +10,31 @@ UtilityGainAudioProcessorEditor::UtilityGainAudioProcessorEditor(UtilityGainAudi
     gainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
     gainSlider.setDoubleClickReturnValue(true, 0.0);
     gainSlider.setPopupDisplayEnabled(true, true, this);
+    
+    gainSlider.textFromValueFunction = [] (double v)
+    {
+        constexpr double floorDB = -60.0;
+        constexpr double eps = 0.05;
+        
+        if (v <= floorDB + 0.05) return juce::String("-inf dB");
+        if (std::abs(v) < eps) return juce::String("0.0 dB");
+        return juce::String(v, 1) + " dB";
+    };
+    
+    // Parsing (text -> value)
+    gainSlider.valueFromTextFunction = [] (const juce::String& text)
+    {
+        constexpr double floorDb = -60.0;
+        constexpr double ceilDb  = 0.0;
+        
+        auto t = text.trim().toLowerCase();
+        
+        if (t == "-inf" || t == "-inf dB") return floorDb;
+        
+        auto num = t.upToFirstOccurrenceOf("dB", false, false);
+        return juce::jlimit(floorDb, ceilDb, num.getDoubleValue());
+    };
+    
     addAndMakeVisible(gainSlider);
     
     gainLabel.setText("Gain (dB)", juce::dontSendNotification);

@@ -55,6 +55,12 @@ public:
     std::atomic<float> inRMS {0.0f};
     std::atomic<float> outRMS {0.0f};
     
+    // Normalization helpers
+    float getGainDB() const;
+    float getGainNorm() const;
+    void setGainDB(float db);
+    void setGainNorm(float norm);
+    
 private:
     // Smoothed linear gain used in processBlock
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> gainSmoothed;

@@ -20,7 +20,10 @@ UtilityGainAudioProcessor::createParameterLayout()
                                                             dBRange,
                                                             0.0f, //default 0 dB
                                                             AudioParameterFloatAttributes().withStringFromValueFunction(
-                                                                                                                       [] (float v, int) { return juce::String(v, 1) + "dB";} )));
+                                                                                                                       [] (float v, int) {
+                                                                                                                           if (v <= -59.95) return juce::String("-inf dB");
+                                                                                                                           if (std::abs(v) < 0.05) return juce::String("0.0 dB");
+                                                                                                                           return juce::String(v, 1) + " dB";} )));
     
     params.push_back(std::make_unique<AudioParameterBool>(ParameterID{ ids::bypass, 1 }, "Bypass", false));
     
@@ -126,6 +129,33 @@ void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     outRMS.store(outRMSBlock);
     
     
+}
+
+float UtilityGainAudioProcessor::getGainDB() const
+{
+    return apvts.getRawParameterValue( ids::gain )->load();
+}
+float UtilityGainAudioProcessor::getGainNorm() const
+{
+    auto* p = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(ids::gain));
+    jassert(p != nullptr);
+    const float db = getGainDB();
+    return p->getNormalisableRange().convertTo0to1(db);
+}
+
+void UtilityGainAudioProcessor::setGainDB(float db)
+{
+    auto* p = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(ids::gain));
+    jassert(p != nullptr);
+    const auto& range = p->getNormalisableRange();
+    const float norm = range.convertTo0to1(db);
+    p->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, norm));
+}
+void UtilityGainAudioProcessor::setGainNorm(float norm)
+{
+    auto* p = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter(ids::gain));
+    jassert(p != nullptr);
+    p->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, norm));
 }
 
 void UtilityGainAudioProcessor::releaseResources() {};
