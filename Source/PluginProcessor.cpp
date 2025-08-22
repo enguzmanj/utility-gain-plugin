@@ -23,7 +23,7 @@ UtilityGainAudioProcessor::createParameterLayout()
                                                                                                                        [] (float v, int) {
                                                                                                                            if (v <= -59.95) return juce::String("-inf dB");
                                                                                                                            if (std::abs(v) < 0.05) return juce::String("0.0 dB");
-                                                                                                                           return juce::String(v, 1) + "dB";} )));
+                                                                                                                           return juce::String(v, 1) + " dB";} )));
     
     params.push_back(std::make_unique<AudioParameterBool>(ParameterID{ ids::bypass, 1 }, "Bypass", false));
     
