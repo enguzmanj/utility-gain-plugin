@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "Square.h"
+#include "MeterComponent.h"
 
 //============================================================
 class UtilityGainAudioProcessorEditor : public juce::AudioProcessorEditor
@@ -27,6 +28,8 @@ private:
     std::unique_ptr<SliderAttachment>(gainAttach);
     
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment>(bypassAttach);
+    
+    std::unique_ptr<MeterComponent>(meters);
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UtilityGainAudioProcessorEditor);

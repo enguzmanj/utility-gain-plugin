@@ -40,6 +40,29 @@ void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
 {
     juce::ScopedNoDenormals noDenormals;
     
+    const int numChannels = buffer.getNumChannels();
+    const int numSamples = buffer.getNumSamples();
+    
+    // --- Input Meters (before processing)
+    
+    float inPeakBlock = 0.0f;
+    double inRMSAcc = 0.0;
+    
+    for (int ch = 0; ch < numChannels; ++ch)
+    {
+        const float* rd = buffer.getReadPointer(ch);
+        for (int n = 0; n < numSamples; ++n)
+        {
+            const float x = rd[n];
+            inPeakBlock = std::max(inPeakBlock, std::abs(x));
+            inRMSAcc += double(x) * double(x);
+        }
+    }
+    
+    const float inRMSBlock = std::sqrt(inRMSAcc/std::max(1, numSamples * numChannels));
+    inPeak.store(inPeakBlock);
+    inRMS.store(inRMSBlock);
+    
     auto bypassParam = apvts.getRawParameterValue(ids::bypass);
     const bool isBypassed = bypassParam->load();
     
@@ -62,8 +85,6 @@ void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
     gainSmoothed.setTargetValue(targetLinear);
     
     // 4) Apply per-sample ramp
-    const int numChannels = buffer.getNumChannels();
-    const int numSamples = buffer.getNumSamples();
     
     for (int ch = 0; ch < numChannels; ++ch)
     {
@@ -84,6 +105,25 @@ void UtilityGainAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, j
             wet[n] = wet[n] * (1 - x) + d[n] * x;
         }
     }
+    
+    // --- Output meters (after processing)
+    float outPeakBlock = 0.0f;
+    double outRMSAcc = 0.0;
+    
+    for (int ch = 0; ch < numChannels; ++ch)
+    {
+        const float* rd = buffer.getReadPointer(ch);
+        for (int n = 0; n < numSamples; ++n)
+        {
+            const float y = rd[n];
+            outPeakBlock = std::max(outPeakBlock, std::abs(y));
+            outRMSAcc += double(y) * double(y);
+        }
+    }
+    
+    const float outRMSBlock = std::sqrt(outRMSAcc/std::max(1, numSamples * numChannels));
+    outPeak.store(outPeakBlock);
+    outRMS.store(outRMSBlock);
     
     
 }

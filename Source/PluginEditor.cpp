@@ -5,8 +5,6 @@ UtilityGainAudioProcessorEditor::UtilityGainAudioProcessorEditor(UtilityGainAudi
 {
     addAndMakeVisible(& square);
     
-    setSize (400, 300);
-    
     // Slider UI
     gainSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     gainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
@@ -25,6 +23,16 @@ UtilityGainAudioProcessorEditor::UtilityGainAudioProcessorEditor(UtilityGainAudi
     bypassButton.setButtonText("Bypass");
     addAndMakeVisible(bypassButton);
     bypassAttach = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, ids::bypass, bypassButton);
+    
+    
+    // Create meters, wiring them to processor atomics via lambdas
+    meters = std::make_unique<MeterComponent> (
+                                                   [&]{ return audioProcessor.inPeak.load();},
+                                                   [&]{ return audioProcessor.outPeak.load();}
+                                                   );
+    addAndMakeVisible(*meters);
+    
+    setSize (400, 300);
 }
 
 UtilityGainAudioProcessorEditor::~UtilityGainAudioProcessorEditor () {}
@@ -44,7 +52,11 @@ void UtilityGainAudioProcessorEditor::resized()
     
     r = getLocalBounds().reduced(55);
     gainLabel.setBounds(r.removeFromTop(24));
-    gainSlider.setBounds(r.withSizeKeepingCentre(r.getHeight() * 0.75, 200));
+    gainSlider.setBounds(r.withSizeKeepingCentre(r.getHeight() * 0.75, 200).removeFromLeft(150));
+    
+    // meters on the right, gain on the left/center
+    auto right = r.removeFromRight(80);
+    meters->setBounds(right);
 }
 
 
